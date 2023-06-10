@@ -55,21 +55,23 @@ def students_detail(request, student_id):
     return render(request, 'campus/students/detail.html', context)
 
 
+@csrf_exempt
 def students_add(request):
     student = {'date_of_birth': datetime.date(1999, 1, 1)}
-    return render(request, 'campus/students/detail.html', {'student': student, 'create': True})
+    context = {'student': student, 'create': True}
+    return render(request, 'campus/students/detail.html', context)
 
 
 @csrf_exempt
 def students_save(request, student_id):
     posted = {
+        'id': student_id,
         'name': request.POST['name'],
         'last_name': request.POST['last_name'],
         'date_of_birth': request.POST['date_of_birth'],
         'favorite_number': request.POST['favorite_number'],
         'country_of_origin': request.POST['country_of_origin'],
         'active': 1 if 'active' in request.POST else 0,
-        'id': student_id,
     }
     with connection.cursor() as cursor:
         q = """
@@ -91,7 +93,7 @@ def students_create(request):
         'date_of_birth': request.POST['date_of_birth'],
         'favorite_number': request.POST['favorite_number'],
         'country_of_origin': request.POST['country_of_origin'],
-        'active': 1 if 'active' in request.POST else 0
+        'active': 1 if 'active' in request.POST else 0,
     }
     with connection.cursor() as cursor:
         q = """
